@@ -1,3 +1,920 @@
-<!doctype html>
-<meta charset="utf-8">
-<h1>hello github.io</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>华为-构建万物互联的智能世界</title>
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <style>
+        /* 初始化 */
+        body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select,figure,figcaption{margin:0;padding:0;}
+        h1,h2,h3,h4,h5,h6,b,strong{font-size: 100%;font-weight: normal;}
+        i,em{font-style: normal;}
+        li{list-style: none;}
+        a{color: #333;text-decoration: none;}
+        body,html{font: 14px, "微软雅黑", Arial;color: #333;}
+        input{outline: none;}
+        .clearfix{zoom: 1;}
+        .clearfix:after{content: '';display:block;height: 0;overflow: hidden;clear: both;}
+
+        .top-nav{
+            width: 100%;
+            height: 23px;
+            overflow: hidden;
+            background-color: #eee;
+        }
+
+        .top-nav-li{
+            float: right;
+            margin: -2px 25px;
+        }
+
+        .top-nav-li a{
+            font-size: 13px;
+            color: #777;
+        }
+        
+        .top-nav-rightCtr{
+            margin-right: 95px;
+        }
+
+        .top-nav-li-s1 span{
+            font-size: 10px;
+        }
+
+        .top-down{
+            padding: auto;
+            font-size: 17px;
+            line-height: 300%;
+        }
+
+        .top-down h1{
+            font-size: 26px;
+            line-height: 160%;
+            margin: 35px auto 15px auto;
+            font-weight: 700;
+        }
+
+        .top-down-langue{
+            overflow: hidden;
+            display: none;
+            background-color: #fff;
+            padding: 10px 80px;    /* 如果要修改一并修改.top-down-groupe>padding */
+        }
+
+        .top-down-langue.active {
+            display: block;
+        }
+
+        .top-down-groupe{
+            overflow: hidden;
+            display: none;
+            background-color: #fff;
+            padding: 10px 80px;
+        }
+
+        .top-down-groupe.active {
+            display: block;
+        }
+
+        .top-down-langue-region{
+            float: left;
+            margin-right: 145px;
+        }
+
+        .top-down-groupe-entreprise{
+            float: left;
+            margin-right: 200px;
+        }
+
+        .nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width:100%;
+            height: 85px;
+            box-sizing: border-box;
+            padding: 0 100px 0 80px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .topnav-ctrl{
+            position: fixed;        /* 固定在顶部，才能脱离文档流“收起” */
+            left: 0;
+            width: 100%;
+            z-index: 100;           /* 保证盖在其他内容上面 */
+            transition: transform .3s ease;  /* 收起/展开的过渡 */
+        }
+
+        .topnav-ctrl.is-hidden{
+            transform: translateY(-100%);    /* 整体上移，隐藏自己 */
+        }
+
+        .nav-logo{
+            flex-shrink: 0;
+        }
+
+        .nav-logo img{
+            width: 135px;
+        }
+
+        .nav-main{
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 33px;
+        }
+        
+        .nav-main a{
+            font-size: 16px;
+        }
+        
+        .nav-main-li{
+            padding: auto;
+        }
+
+        .nav-right ul{
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-right-li{
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .placeholder{
+            height: 108px;  /* 占位高度，和 .topnav-ctrl 的高度一致 */
+
+        }
+        
+        .publicity{
+            position: relative;
+        }
+
+        .publicity img{
+            width: 100%;
+            height: auto;
+        }
+
+        .publicity-content{
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-60%);
+        }
+
+        .publicity-content-span{
+            font-size: 50px;
+        }
+
+        .publicity-content h1{
+            font-size: 50px;
+        }
+
+        .publicity-content a{
+            font-size: 18px;
+            color: #c7000b;
+        }
+
+        .publicity-marctrl{
+            margin-bottom: 160px;
+        }
+
+        .publicity-content-a{
+            line-height: 90px;
+        }
+        
+        .business {
+            margin-bottom: 100px;
+        }
+
+        .business-content {
+            max-width: 1320px;
+            width: 89%;
+            background-color: #f5f5f5;
+            margin: 0 auto;
+            padding: 20px 20px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border-radius: 20px;
+        }
+
+        .business-content-main {
+            flex-shrink: 0;
+            width: 300px;
+        }
+
+        .business-content-main h1 {
+            font-size: 31px;
+            font-weight: 800;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .business-content-buttonf {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .business-content-button {
+            width: calc(33.33% - 15px);
+            height: 120px;
+            background-color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 30px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .business-content-button:hover{
+            color: #c7000b;
+        }
+
+        .business-content-button span{
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .message-title{
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .message-title h2{
+            font-size: 32px;
+            font-weight: 750;
+        }
+
+        .message-box{
+            margin: 0 74px;
+            margin-bottom: 150px;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr 0.85fr;
+            grid-template-rows: repeat(2,330px);
+            gap: 20px;
+        }
+
+        .message-box1{
+            grid-row: 1 / 3;
+            grid-column: 1 / 2;
+        }
+
+        .message-box2{
+            grid-row: 2 / 3;
+            grid-column: 2 / 3;
+        }
+
+        .message-box3{
+            grid-row: 1 / 2;
+            grid-column: 2 / 3;
+        }
+
+        .message-box4{
+            grid-row: 1 / 3;
+            grid-column: 3 / 4;
+        }
+
+        .message-box-item{
+            overflow: hidden;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message-box-item img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;    /* 鼠标悬停时显示为手型 */
+
+            transition: transform 0.3s; /* 添加过渡效果 */
+        }
+        
+        .message-box-item:hover img{
+            transform: scale(1.05); /* 鼠标悬停时放大图片 */
+        } 
+
+
+        .message-box-item .message-box-item-mainspan,
+        .message-box-item .message-box-item-span,
+        .message-box-item .message-box-item-spant,
+        .message-box-item .message-box-item-spanA,
+        .message-box-item .message-box-item-a{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .message-box-item .message-box-item-mainspan{
+            top: 30px;
+            font-size: 25px;
+            font-weight: 800;
+            width: 80%;
+            text-align: center;
+        }
+
+        .message-box-item .message-box-item-span{
+            top: 70px;
+            font-size: 20px;
+            width: 80%;
+            text-align: center;
+        }
+        
+        .message-box-item .message-box-item-spant{
+            top: 100px;
+            font-size: 20px;
+            width: 80%;
+            text-align: center;
+        }
+
+        .message-box-item .message-box-item-spanA{
+            top: 110px;
+            font-size: 20px;
+            width: 80%;
+            text-align: center;
+        }
+
+        .message-box-item .message-box-item-a{
+            font-size: 18px;
+            width: 80%;
+            text-align: center;
+            color: #c7000b;
+        }
+
+        .news{
+            background-color: #f3f3f3;
+            padding: 160px 80px 235px;
+            margin-bottom: 100px;
+        }
+
+        .news-title{
+            margin-bottom: 70px;
+        }
+
+        .news-title::after{
+            content:'';
+
+            display: block;
+            background-color: #c7000b;
+            width: 60px;
+            height: 3px;
+        }
+
+        .news-title h2{
+            font-size: 32px;
+            font-weight: 700;
+            /* margin-bottom: 70px; */
+            padding-bottom: 10px;
+        }
+
+        .news-contentf{
+            display: flex;
+            gap: 20px;  /*后期改为平分行距*/
+            flex-wrap: wrap;
+        }
+
+        .news-content{
+            box-sizing: border-box;
+            background-color: #fff;
+            width: 420px;
+            height: 250px;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .news-content:hover{
+            cursor: pointer;
+            color: #c7000b;
+        }
+
+        .news-content-times{
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .news-content span{
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .news-more{
+            float: right;
+            margin-top: 70px;
+        }
+        
+        .news-more a{
+            font-size: 18px;
+            font-weight: 300;
+            color: #c7000b;
+        }
+
+        .about{
+            background-color: #fff;
+            display: flex;
+            margin: 0 130px 152px 90px;
+        }
+
+        .about-title{
+            width: 1400px;
+            display: flex;
+            align-items: center;
+        }
+
+        .about-title h2{
+            width: 60%;
+            font-size: 60px;
+            font-weight: 700;
+        }
+        
+        .about-content{
+            display: flex;
+            align-items: center;
+        }
+
+        .bottom{
+            background-color: #f3f3f3;
+            padding: 20px 100px 0 80px;
+        }
+
+        .bottom-top{
+            display: flex;
+            justify-content: space-between;
+            padding:10px 0;
+            border-bottom:#ddd 1px solid;
+        }
+
+        .bottom-top-search{
+            display: flex;
+            align-items: center;
+        }
+
+        .bottom-top-search input{
+            box-sizing: border-box;
+            width: 490px;
+            height: 50px;
+            border: 1px #ddd solid;
+            border-right: none;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .bottom-top-search button{
+            box-sizing: border-box;
+            position: relative;
+            width: 46px;
+            height: 50px;
+            background-color: #fff;
+            border: 1px #ddd solid;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .bottom-top-search button::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 30px;
+            background-color: #ddd;
+        }
+
+        .bottom-content{
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 0;
+            line-height: 250%;
+            border-bottom: 1px #ddd solid;
+        }
+
+        .bottom-content div{
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .bottom-content a{
+            font-size: 14px;
+        }
+
+        .bottom-bottom{
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 0;
+            align-items: center;
+        }
+
+        .bottom-bottom-list ul{
+            display: flex;
+            gap: 20px;
+        }
+
+        .bottom-bottom-font ul{
+            display: flex;
+            gap: 20px;
+        }
+
+        .statementCtr{
+            display: flex;
+            background-color: #eee;
+            height: 50px;
+            align-items: center;
+        }
+
+        .statement{
+            display: flex;
+            gap: 30px;
+            width: fit-content;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #666
+        }
+        
+        .statement-right{
+            position: relative;
+        }
+
+        .statement-right ul{
+            display: flex;
+            gap: 30px;
+            margin: 0 0 0 30px;
+        }
+
+        .statement-right a{
+            color: #666;
+        }
+
+        .statement-right::before{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 15px;
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav-ctrl" id="topnav-ctrl">
+        <div class="top">
+            <ul class="top-nav">
+                <li class="top-nav-li top-nav-rightCtr" id="btnLangue">
+                    <div class="top-nav-li-s1">
+                        <a href="#">选择区域/语言</a>      
+                        <span class="iconfont icon-zhankai"></span>
+                    </div>
+                </li>
+
+                <li class="top-nav-li" id="btnGroupe">
+                    <div class="top-nav-li-s1">
+                        <a href="#">集团网站</a>
+                        <span class="iconfont icon-zhankai"></span>
+                    </div>
+                </li>
+            </ul>
+            
+            <div class="top-down">
+                <ul class="top-down-langue" id="langueMenu">
+                    <li class="top-down-langue-main"><h1>选择区域/语言</h1></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                    <li class="top-down-langue-region"><a href="#">China-简体中文</a></li>
+                </ul>
+
+                <ul class="top-down-groupe" id="groupeMenu">
+                    <li><h1>集团网站</h1></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">企业业务网站</a></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">运营商业务网站</a></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">消费者业务网站</a></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">华为云业务网站</a></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">数字能源业务网站</a></li>
+                    <li class="top-down-groupe-entreprise"><a href="#">智能汽车解决方案业务网站</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav">
+            <div class="nav-logo">
+                <img src="huawei_logo.png" alt="logo">
+            </div>
+            <ul class="nav-main">
+                <li class="nav-main-li"><a href="#">个人及家庭产品</a></li>
+                <li class="nav-main-li"><a href="#">商用产品及方案</a></li>
+                <li class="nav-main-li"><a href="#">服务支持</a></li>
+                <li class="nav-main-li"><a href="#">合作伙伴与开发者</a></li>
+                <li class="nav-main-li"><a href="#">关于华为</a></li>
+            </ul>
+            <div class="nav-right">
+                <ul>
+                    <li class="nav-right-li">
+                        <div class="icon-wodedingdan11"></div>
+                    </li>
+                    <li class="nav-right-li">
+                        <div class="icon-wodedingdan11"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="placeholder"></div>
+
+    <div class="publicity">
+        <img class="publicity-img" src="matebook-fold-pc.png" alt="publicityImg">
+        <div class="publicity-content">
+            <div class="publicity-content-spanf">
+                <span class="publicity-content-span" style="font-weight: 700;">HUAWEI </span>
+                <span class="publicity-content-span" style="font-weight: 400;">MateBook Fold</span>
+            </div>
+            <h1>非凡大师</h1>
+            <a class="publicity-content-a" href="#">了解更多 ></a>
+        </div>
+        <div class="publicity-marctrl"></div>
+    </div>
+
+    <div class="business">
+        <div class="business-content">
+                <div class="business-content-main">
+                    <h1>我们的业务</h1>
+                </div>
+            <div class="business-content-buttonf">
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>企业业务</span>
+                </div>
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>运营商业务</span>
+                </div>
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>消费者业务</span>
+                </div>
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>华为云业务</span>
+                </div>
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>数字能源业务</span>
+                </div>
+                <div class="business-content-button" onclick="location.href='#'">
+                    <span>智能汽车解决方案业务</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="message">
+        <div class="message-title">
+            <h2>推荐信息</h2>
+        </div>
+
+        <div class="message-box">
+            <div class="message-box-item message-box1" onclick="location.href='#'">
+                <span class="message-box-item-mainspan">华为助力天津滨海农商银行成功上线分布式新核心系统</span>
+                <span class="message-box-item-spanA">构筑现代数智银行新底座，加速数字化转型新征程</span>
+                <a class="message-box-item-a" style="top: 175px;">了解更多</a>
+                <img src="DM_20260901144015_001.webp" alt="messageImg">
+            </div>
+            <div class="message-box-item message-box3" onclick="location.href='#'">
+                <span class="message-box-item-mainspan">华为全连接大会2026</span>
+                <span class="message-box-item-span">智启新未来</span>
+                <span class="message-box-item-spant">2026年9月17日-19日&nbsp;&nbsp;&nbsp;&nbsp;中国，上海</span>
+                <a class="message-box-item-a" style="top: 140px;">了解更多</a>
+                <img src="DM_20260901144015_004.webp" alt="messageImg">
+            </div>
+            <div class="message-box-item message-box2" onclick="location.href='#'">
+                <span class="message-box-item-mainspan">Tech4Nature：保护巴西红树林</span>
+                <a class="message-box-item-a" style="top: 110px;">了解更多</a>
+                <img src="DM_20260901144015_006.jpg" alt="messageImg">
+            </div>
+            <div class="message-box-item message-box4" onclick="location.href='#'">
+                <span class="message-box-item-mainspan">HUAWEI MatePad Pro 12英寸</span>
+                <span class="message-box-item-spanA">灵感 有声有色</span>
+                <a class="message-box-item-a" style="top: 140px;">了解更多</a>
+                <img src="DM_20260901144015_007.webp" alt="messageImg">
+            </div>
+        </div>
+    </div>
+
+    <div class="news">
+        <div class="news-title">
+            <h2>新闻动态</h2>
+        </div>
+        <div class="news-contentf">
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月25日</div>
+                <span class="news-content-span">华为荣膺2026年Gartner<sup>®</sup>企业存储平台魔力象限「领导者」</span>
+            </div>
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月21日</div>
+                <span class="news-content-span">沙特stc联合华为实现多频多波束（MB²）微波解决方案全球首商用</span>
+            </div>
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月20日</div>
+                <span class="news-content-span">华为发布SingleRAN 22.1软件版本，引领移动AI时代</span>
+            </div>
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月07日</div>
+                <span class="news-content-span">科技小学堂多方协作倡议在上海启动</span>
+            </div>
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月07日</div>
+                <span class="news-content-span">华为在GlobalData 2026年微波回传竞争力评估报告中被评为唯一领导者</span>
+            </div>
+            <div class="news-content" onclick="location.href='#'">
+                <div class="news-content-times">2026年8月04日</div>
+                <span class="news-content-span">华为E-band微波产品RTN 3800斩获2026年iF与红点双料设计大奖</span>
+            </div>
+        </div>
+
+        <div class="news-more">
+            <a href="#" onclick="location.href='#'">更多新闻</a>
+        </div>
+    </div>
+
+    <div class="about">
+        <div class="about-title">
+            <h2>构建万物互联的智能世界</h2>
+        </div>
+        <div class="about-content">
+            <p>华为创立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。我们致力于把数字世界带入每个人、每个家庭、每个组织，构建万物互联的智能世界。</p>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="bottom-top">
+            <div class="bottom-top-title">
+                <h2>首页</h2>
+            </div>
+            <div class="bottom-top-search">
+                <input name="searth" title="搜索" type="text">
+                <!-- 后续需要改为字体图标 -->
+                <button>O</button>
+            </div>
+        </div>
+        <div class="bottom-content">
+            <ul class="bottom-top-content-1">
+                <li><div>关于华为</div></li>
+                <li><a href="#">公司简介</a></li>
+                <li><a href="#">可持续发展</a></li>
+                <li><a href="#">信任中心</a></li>
+                <li><a href="#">管理层信息</a></li>
+                <li><a href="#">招纳贤士</a></li>
+                <li><a href="#">供应商</a></li>
+                <li><a href="#">查看更多&ensp;></a></li>
+                
+            </ul>
+            <ul class="bottom-top-content-2">
+                <li><div>新闻与活动</div></li>
+                <li><a href="#">新闻</a></li>
+                <li><a href="#">展会活动</a></li>
+                <li><a href="#">多媒体</a></li>
+            </ul>
+            <ul class="bottom-top-content-3">
+                <li><div>发现华为</div></li>
+                <li><a href="#">华为技术专栏</a></li>
+                <li><a href="#">智能世界2035</a></li>
+                <li><a href="#">迈向智能世界</a></li>
+                <li><a href="#">全球化智化指数</a></li>
+                <li><a href="#">出版物</a></li>
+            </ul>
+            <ul class="bottom-top-content-4">
+                <li><div>我们的产品</div></li>
+                <li><a href="#">个人及家庭产品</a></li>
+                <li><a href="#">企业业务产品</a></li>
+                <li><a href="#">运营商网络产品</a></li>
+                <li><a href="#">华为云服务</a></li>
+                <li><a href="#">数字能源产品</a></li>
+            </ul>
+            <ul class="bottom-top-content-5">
+                <li><div>技术支持</div></li>
+                <li><a href="#">消费者技术支持</a></li>
+                <li><a href="#">华为云技术支持</a></li>
+                <li><a href="#">企业技术支持</a></li>
+                <li><a href="#">运营商技术支持</a></li>
+                <li><a href="#">数字能源技术支持</a></li>
+                <li><a href="#">安全应急响应</a></li>
+            </ul>
+        </div>
+        <div class="bottom-bottom">
+            <div class="bottom-bottom-list">
+                <ul>
+                    <li><a href="#">华为商城</a></li>
+                    <li><a href="#">华为云</a></li>
+                    <li><a href="#">华为JDC社区</a></li>
+                    <li><a href="#">华为心声社区</a></li>
+                </ul>
+            </div>
+            <div class="bottom-bottom-font">
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信</a></li>
+                    <li><a href="#">今日头条</a></li>
+                    <li><a href="#">知乎</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="statementCtr">
+        <div class="statement">
+            <div class="statement-left">
+                <span>版权所有 © 1987-2026 华为技术有限公司&emsp;&nbsp;</span>
+                <span>粤A2-20044005号</span>
+                &nbsp;
+                <span>粤公网安备44030702002388号</span>
+            </div>
+            <div class="statement-right">
+                <ul>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">法律声明</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">除名查询</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var btnGroupe = document.getElementById('btnGroupe')
+        var btnLangue = document.getElementById('btnLangue')
+        var groupeMenu = document.getElementById('groupeMenu')
+        var langueMenu = document.getElementById('langueMenu')
+
+        btnGroupe.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+
+            if (groupeMenu.classList.contains('active')) {
+                groupeMenu.classList.remove('active');// 如果 groupe 是隐藏的，就显示它；如果已显示，就隐藏它
+
+                const icon = this.querySelector('.iconfont');//定位这个字体图标
+                icon.classList.replace('icon-shangzhankai','icon-zhankai');//将字体由上展开转变为下展开
+            } else {
+                groupeMenu.classList.add('active');
+                langueMenu.classList.remove('active'); // 同时确保另一个菜单关闭
+                const icon = this.querySelector('.iconfont');//定位这个字体图标
+                icon.classList.replace('icon-zhankai','icon-shangzhankai');//将字体图标由下展开转变为上展开
+            }
+        });
+
+        btnLangue.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // 如果 langue 是隐藏的，就显示它；如果已显示，就隐藏它
+            if (langueMenu.classList.contains('active')) {
+                langueMenu.classList.remove('active');
+
+                const icon = this.querySelector('.iconfont');//定位这个字体图标
+                icon.classList.replace('icon-shangzhankai','icon-zhankai');//将字体由上展开转变为下展开
+            } else {
+                langueMenu.classList.add('active');
+                groupeMenu.classList.remove('active'); // 同时确保另一个菜单关闭
+                const icon = this.querySelector('.iconfont');//定位这个字体图标
+                icon.classList.replace('icon-zhankai','icon-shangzhankai');//将字体图标由下展开转变为上展开
+            }
+        });
+
+        const nav = document.getElementById('topnav-ctrl');
+        const THRESHOLD = 100;   // 下滑多少 px 后收起
+
+        let lastY = window.scrollY;
+        let ticking = false;
+
+        function update() {
+            const y = window.scrollY;
+
+            // 只判断阈值：超过 100px 就收起，回到 100px 内就展开
+            nav.classList.toggle('is-hidden', y > THRESHOLD);
+
+            lastY = y;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(update);
+                ticking = true;
+            }
+        }, { passive: true });
+    </script>
+</body>
