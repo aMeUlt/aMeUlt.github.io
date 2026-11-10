@@ -1065,7 +1065,7 @@
 <h1>基于 YOLO26n 端到端检测的单一目标自瞄识别方法研究与测试</h1>
 <p class="lede">检测目标实物为 Robocon 吉祥物周边毛绒玩偶（仅作为单一目标载体，本项目属 RM 备赛过程中的感知链路技术验证）。</p>
 <div class="chips"><span class="chip chip-hot">Robomaster备赛</span><span class="chip">YOLO26n</span><span class="chip">自瞄识别</span></div>
-<!-- <div class="callout"><b>交付</b><code>D:\\SystemApps\\desk\\figure_doll\\MeUlt_Do_c</code>（点编译即运行）。</div> -->
+<div class="callout"><b>交付</b>本地 C++ 可执行程序（点编译即运行）。</div>
 
 <h2>1 任务与范围</h2>
 <p>输入摄像头一帧图像，输出目标玩偶的单类别边界框与置信度，供自瞄链路计算像素偏心。</p>
@@ -1112,6 +1112,141 @@
 <h2>7 局限</h2>
 <p>正样本全部来自同一张桌子，<strong>新场景正样本为 0，换环境无统计证据</strong>（唯一正面个案 n=1，conf 0.943）。框偏大（mAP@0.5 与 @0.5:0.95 差 0.122 即此问题），框中心不宜直接作瞄准点。多目标、遮挡、运动模糊未评估。仅 <code>CPUExecutionProvider</code>，需更快可换 DirectML/OpenVINO 而不改模型。训练所用 ultralytics 为 AGPL-3.0，公开分发需先定许可证。</p>
 <div class="callout callout-warn"><b>下一步（P0）</b>新场景视频已抽 169 帧待标注，标完并入后重训，"换环境"将第一次有数字。</div>`
+                    }
+                ]
+            },
+            {
+                id: "vue",
+                name: "华为官网仿写",
+                icon: "code",
+                status: "已完成",
+                sub: "Vue 3 · Vite · 静态页重构",
+                docs: [
+                    {
+                        id: "report",
+                        title: "技术报告",
+                        html: `
+<h1>基于 Vue 3 单文件组件的华为官网首页仿写——由原生静态实现重构为组件化实现的研究与测试</h1>
+<p><strong>前端备练 · 技术报告</strong>　｜　完成日期 2026-11-10</p>
+<p><strong>摘要</strong>　本报告记录把一个 919 行的原生单文件静态页面重构为 Vue 3 单文件组件应用的全过程，重点在环境配置、组件边界划分与 JavaScript 侧的真实难点。重构后源码 1400 行（+52%），但手写重复 DOM 节点由 41 个降为 0、内联 <code>onclick</code> 由 17 处降为 0，交互能力从"两个下拉面板互斥"扩展为轮播、选项卡联动、列表展开、实时过滤、滚动感知五类。全部结论均有可复现命令与浏览器断言支撑。</p>
+<p><strong>关键词</strong>　Vue 3；单文件组件；Composition API；<code>&lt;script setup&gt;</code>；Vite；响应式状态；副作用清理；Transition；事件委托</p>
+<h2>1 任务与范围</h2>
+<p>输入是已经存在的一份原生实现：静态 HTML + 内联 <code>&lt;style&gt;</code> + 一段裸 <code>&lt;script&gt;</code>，用 <code>getElementById</code> 拿节点、<code>classList</code> 增删、内联 <code>onclick</code> 跳转。任务不是重新设计页面，而是<strong>在保持视觉与信息结构一致的前提下，把它改写成 Vue 组件化实现</strong>，并让改写过程真正落到 JavaScript 能力上，而不是只把 HTML 换个后缀。</p>
+<p><strong>已实现：工程脚手架与依赖管理、组件边界划分、状态驱动渲染、轮播与定时器生命周期、滚动方向判定、过渡动画与条件渲染的配合、事件委托式外部点击关闭、生产构建验证、浏览器端交互断言。</strong></p>
+<p><strong>未实现：路由（vue-router）、状态管理（Pinia）、服务端渲染、接口取数、单元测试与 E2E、响应式断点适配、组件间通信（详见 §8）。</strong> 本报告全部指标指前端静态工程本身，不含任何后端或真实业务数据。</p>
+<h2>2 技术选型</h2>
+<ul>
+    <li>在技术选型上，对原生 DOM API、jQuery 与 Vue 3 三种方案进行了比较。原生 + DOM API 零依赖、产物最小，交互依靠手动 querySelector 取节点、手动增删 class、手动改文本实现；其问题不在能力不够——本报告涉及的全部交互原生均可写出——而在于状态与视图的映射全靠人肉维护。原生实现中两个下拉面板互斥需写四次 class 操作，增加第三个面板就得回头修改所有分支；再叠加轮播、选项卡联动和实时过滤后，需要同步的 DOM 位置会非线性增长。</li>
+</ul>
+<ul>
+    <li>而本任务要练的恰是组件化的状态管理，继续走原生等于把任务取消，因此排除。jQuery 相比原生只省了选择器和事件绑定的样板，状态仍旧寄存在 DOM 上，"这个变量变了要顺手改哪几处"一个都没解决，对本次要练的能力没有增量，排除。最终选定 Vue 3 + Vite，决定性的是单向数据流：视图由声明的状态派生，"面板互斥""列表展开"这类逻辑退化成改一个变量（见 §5.5、§5.6），需要同步的位置由响应式系统记账；另外单文件组件把结构、样式、逻辑收在同一处，样式天然按组件隔离；Vite 的开发服务器冷启动 627ms、生产构建 331ms，反馈快到一个改动改完就能立刻在浏览器里验。</li>
+</ul>
+<ul>
+    <li>框架版本沿用本机已有的另一个 Vue 3 示例工程锁定的 vue ^3.5 + vite ^8 组合，不引入未测试的版本搭配。选 Vue 3 而非 Vue 2 的具体收益是 onBeforeUnmount 让定时器与全局监听的清理能成对出现（§5.1、§5.3），以及 &lt;script setup&gt; 免掉 components 注册样板。图标沿用原工程导出的 iconfont 字体库，不引入图标组件库——素材已在本地，引入新依赖只增加体积不增加价值。</li>
+</ul>
+<h2>3 环境与工程配置</h2>
+<pre><code>node                 v26.13.0
+npm                  11.20.0
+registry             https://registry.npmjs.org/
+vue                  3.5.45      （package.json 写 ^3.5.42）
+vite                 8.3.7       （package.json 写 ^8.2.2）
+@vitejs/plugin-vue   6</code></pre>
+<p>版本刻意对齐同机上已存在的另一个 Vue 3 示例工程，目的是复用已被验证过的工具链组合，避免引入未测试的版本搭配。</p>
+<p>素材放在 <code>public/</code> 而非 <code>src/assets/</code>，是因为它们被 <code>&lt;img&gt;</code> 的运行时字符串路径引用（轮播的 <code>img</code> 字段是数据），走 <code>public</code> 才能保持路径原样、不被构建器重写哈希。</p>
+<p>端口用 <code>strictPort: true</code> 固定：验证脚本要反复访问同一地址，端口漂移会让自动化断言指向错误页面。</p>
+<h2>5 JavaScript 技术难点</h2>
+<p>这一节是本报告的重点。每项都写清"难在哪"，而不是只写"用了什么"。</p>
+<h3>5.1 轮播的定时器生命周期与"暂停"的语义</h3>
+<p>难点不在自动播放，在于<strong>定时器该在什么时候存在</strong>。最初的自然写法是鼠标进入就 <code>clearInterval</code>、离开就重新 <code>setInterval</code>，但这会带来一个副作用：重新计时会让用户松手后立刻被切走，体验取决于"上一次切换过了多久"，而这个信息在重建定时器时丢了。</p>
+<p>最终做法是定时器<strong>常驻</strong>，暂停只翻转一个标志位：</p>
+<pre><code>timer = setInterval(() =&gt; {
+    if (playing.value) {
+        next()
+    }
+}, INTERVAL)</code></pre>
+<p>这样暂停期间计时器仍在走，但恢复后不会立刻跳帧。同时 <code>onBeforeUnmount(stop)</code> 保证组件销毁时 <code>clearInterval</code>，否则在 SPA 里切走页面后定时器仍在改一个已卸载组件的 ref。</p>
+<p>方向感知动画是另一个隐藏难点：进出场位移方向必须与"用户是往前翻还是往后翻"一致，所以 <code>dir</code> 必须是响应式状态、且必须在 <code>idx</code> 变化<strong>之前</strong>写好，<code>&lt;Transition :name="'slide-' + dir"&gt;</code> 才能拿到正确的类名组合。</p>
+<h3>5.2 <code>&lt;Transition&gt;</code> 与 <code>v-if</code> 的时序陷阱（实测踩到）</h3>
+<p>两个下拉面板用 <code>v-if</code> 控制，外面包 <code>&lt;Transition name="drop"&gt;</code>，离场动画 200ms。这带来一个真实后果：<strong>元素在 <code>v-if</code> 已经变 false 之后，仍然在 DOM 里存在 200ms</strong>。</p>
+<p>我用 <code>document.querySelectorAll('.panel').length</code> 做互斥断言时，等待只给了 80ms，结果读到 <code>2</code>——看起来像"两个面板同时开着，互斥逻辑坏了"。把等待拉长到 400ms 后重测：</p>
+<pre><code>点集团网站   → panels 1 / cells 6  / 标题「集团网站」
+点区域语言   → panels 1 / cells 18 / 标题「选择区域/语言」
+再点同一个   → panels 0
+点页面空白   → panels 0</code></pre>
+<p>互斥一直是对的，错的是取样时机。结论有两条：<strong>动画存在时，DOM 节点数量不是状态的可靠观测点，应改测状态或等动画结束</strong>；以及 <code>v-show</code>（始终在 DOM，只切 display）与 <code>v-if</code>（进出 DOM）在需要被自动化断言时，语义差别会直接体现为测试稳定性差别。</p>
+<h3>5.3 滚动方向判定与被动监听</h3>
+<p>固定头"下滚收起、上滚露出"看起来简单，实际有三个坑：</p>
+<ol>
+    <li><strong>微小抖动</strong>。浏览器在边界处会产生 1px 级滚动事件，若直接比较 <code>y &gt; lastY</code>，头部会高频抖动。解法是设最小位移阈值，<code>Math.abs(y - lastY) &lt; 8</code> 时直接返回、不更新状态。</li>
+    <li><strong>首屏不该收起</strong>。页面顶部附近向下滚一点点就藏头部很恼火，因此叠加绝对位置条件 <code>y &gt; THRESHOLD</code>（100px），两个条件同时成立才隐藏。</li>
+    <li><strong>性能与清理</strong>。监听必须 <code>{ passive: true }</code>（回调不 <code>preventDefault</code>，让浏览器不必等 JS 就能合成滚动），且必须在 <code>onBeforeUnmount</code> 里 <code>removeEventListener</code>。</li>
+</ol>
+<p>还有一个布局侧的连带问题：头部改成 <code>position: fixed</code> 后脱离文档流，下方内容会被盖住。原实现用一个 <code>.placeholder</code> 空 div 顶高度，这里换成 <code>.head-holder { height: 108px }</code>，并把 108 这个值和顶栏实际高度（32 + 76）显式对应起来。</p>
+<h3>5.4 事件委托实现"点外面关闭"</h3>
+<p>面板要在点击页面其它位置时关闭，但 Vue 的 <code>@click</code> 是组件内绑定，管不到外部。做法是在 <code>onMounted</code> 往 <code>document</code> 挂一个监听，靠 <code>closest</code> 判断落点是否属于本组件：</p>
+<pre><code>function onDocClick(e) {
+    if (!e.target.closest('.topnav')) {
+        close()
+    }
+}</code></pre>
+<p>难点在两处：其一，按钮自身的点击会冒泡到这个 document 监听，必须在同一轮里被组件的 <code>@click</code> 处理掉——由于 <code>closest('.topnav')</code> 对按钮本身返回真值，外部关闭分支不会误触发，这个判断顺序不能反。其二，document 级监听的生命周期长于组件，<code>onBeforeUnmount</code> 里不注销就会留下一个引用已卸载状态的僵尸监听器。</p>
+<h3>5.5 用单一状态源 + <code>computed</code> 消除互斥逻辑</h3>
+<p>原生实现里"打开 A 就关 B"必须写两遍：</p>
+<pre><code>groupeMenu.classList.add('active'); langueMenu.classList.remove('active');</code></pre>
+<p>两个面板、两个分支、四次 class 操作，加一个面板就要改所有分支。组件里把状态收成<strong>一个</strong> <code>open</code>（值域 <code>'' | 'langue' | 'groupe'</code>），互斥由数据结构本身保证：</p>
+<pre><code>const langueOn = computed(() =&gt; open.value === 'langue')
+const groupeOn = computed(() =&gt; open.value === 'groupe')
+function toggle(name) { open.value = open.value === name ? '' : name }</code></pre>
+<p>加第三个面板只需要多一个 <code>computed</code> 和一段模板，<code>toggle</code> 一行不改。同理 <code>News.vue</code> 的展开/收起不维护"当前显示了哪几条"，只维护 <code>expanded</code>，可见集合由 <code>computed</code> 派生：</p>
+<pre><code>const visible = computed(() =&gt; expanded.value ? NEWS : NEWS.slice(0, BASE))
+const rest = computed(() =&gt; NEWS.length - BASE)</code></pre>
+<p>按钮文案 <code>更多新闻 +3</code> / <code>收起新闻</code> 也是派生的，不需要在点击回调里手改文本。</p>
+<h3>5.6 <code>v-model</code> + <code>flatMap</code> 的实时过滤</h3>
+<p>页脚搜索框把 5 个链接列拍平成单一候选集，再对输入做子串匹配：</p>
+<pre><code>const ALL = computed(() =&gt; COLUMNS.flatMap(c =&gt; c.links))
+const matched = computed(() =&gt; {
+    const q = word.value.trim().toLowerCase()
+    if (!q) return []
+    return ALL.value.filter(l =&gt; l.toLowerCase().includes(q)).slice(0, 6)
+})</code></pre>
+<p>难点不在算法，在<strong>空态的三义性</strong>：没输入、输入了但没命中、输入过长——三种情况要显示不同文案，否则用户无法区分"我打错了"和"确实没有"。因此建议面板里分别处理 <code>!matched.length</code> 与长度上限两种分支，而不是笼统显示"无结果"。</p>
+<h3>5.7 手写重复 DOM 的数据化</h3>
+<p>原实现里有大量复制粘贴的节点：区域语言下拉 17 个 <code>&lt;li&gt;</code>（内容完全相同，都是 <code>China-简体中文</code>）、集团网站 6 个、业务按钮 6 个、主导航 5 个、新闻 6 条、推荐卡 4 张、页脚 5 列。合计 41 个手写重复节点、17 处内联 <code>onclick="location.href='#'"</code>。</p>
+<p>重构后这 41 个节点全部由 10 个数组经 <code>v-for</code> 生成，内联 <code>onclick</code> 归零。区域列表顺带从"同一行复制 17 遍"改成 18 个真实地区/语言条目——<strong>数据与模板分离后，改内容不再需要改结构</strong>，这正是组件化的直接收益。</p>
+<h2>6 实测数据</h2>
+<h3>6.1 网络与资源</h3>
+<p>首屏共 36 个请求。修复前唯一失败项是 <code>/favicon.ico</code> 404（HTML 未声明图标）；修复后 36 个请求全部 2xx/3xx，<code>public/img</code> 下 6 张图与 <code>iconfont.woff2</code> 均正常返回。</p>
+<h3>6.2 图标字体是否真的生效</h3>
+<p>控制台出现过一条 <code>Slow network is detected ... Fallback font will be used</code>，容易误判为"字体没加载上"。直接验证渲染出的字符：</p>
+<pre><code>.iconfont 元素 5 个
+icon-zhankai        → ::before 码点 58898 (0xE5D2)  PUA 私用区 ✓
+icon-wodedingdan11  → ::before 码点 58917 (0xE5E5)  PUA 私用区 ✓
+font-family         → "iconfont"</code></pre>
+<p>码角落在 Unicode 私用区，说明字形确实来自 iconfont 而非系统兜底字体。</p>
+<h3>6.3 交互断言（浏览器内真实点击）</h3>
+<pre><code>顶栏按钮 2 个；面板互斥见 §5.2
+轮播圆点 4 个，点第 4 个 → 计数 "4 / 4"
+业务 tab 6 个，点第 4 个 → 详情标题「华为云业务」，要点 3 条
+新闻 6 → 9 条，按钮文案 "更多新闻 +3" → "收起新闻"
+页脚输入「产品」→ 实时匹配 4 条
+下滚 600px → 头部 is-hidden = true；回滚至 200px → false
+推荐卡 4 张；页脚列 5 个
+控制台无 error</code></pre>
+<h2>8 局限</h2>
+<ul>
+    <li><strong>组件间零通信。</strong> <code>defineProps</code> / <code>defineEmits</code> / <code>watch</code> 使用次数均为 0。这是当前划分的直接结果：每个区块的数据自持、无跨区块联动需求。代价是可复用性受限——例如把 <code>News.vue</code> 搬到别处时，条数阈值 <code>BASE = 6</code> 和数据源一起被搬走，无法参数化。需要复用时应改为 props 传入。</li>
+    <li><strong>数据仍是硬编码。</strong> 全部数组写死在组件里，没有取数层，也没有 loading / error / 空数据三态。真实项目里这块工作量会显著高于当前样式实现。</li>
+    <li><strong>未做响应式适配。</strong> 栅格用固定列数，窄屏会挤压。原实现同样没做，属于继承的缺口而非新增。</li>
+    <li><strong>无自动化测试。</strong> §6.3 的断言是一次性手工脚本，没有沉淀成测试文件，回归时不会自动跑。</li>
+    <li><strong>动画无障碍缺失。</strong> 轮播自动播放未提供"暂停"按钮，也未响应 <code>prefers-reduced-motion</code>，对动效敏感用户不友好。</li>
+    <li><strong>构建产物体积未做代码分割。</strong> 8 个组件打进同一个 85.26 kB chunk（gzip 33.95 kB），首屏会加载全部区块代码，包括位于页面底部的页脚。</li>
+</ul>
+<h2>9 结论</h2>
+<ol>
+    <li><strong>收益集中在状态收敛，不在代码量。</strong> 源码从 919 行涨到 1400 行（+52%），但 41 个手写重复 DOM 节点与 17 处内联 <code>onclick</code> 归零，"面板互斥""列表展开"这类逻辑从多分支 class 操作退化为改一个变量。行数增加主要来自 scoped 样式随组件拆分、以及为真实数据补齐的字段。</li>
+    <li><strong>Vue 真正解决的问题是"状态变了要手动改哪几处 DOM"。</strong> 原生实现里这个映射靠人肉维护，<code>getElementById</code> × 5、<code>addEventListener</code> × 3 只覆盖两个下拉；一旦加入轮播、选项卡、实时过滤，手动同步的成本会非线性上升。</li>
+    <li><strong>最难的不是响应式 API，是副作用生命周期与动画时序。</strong> 定时器、document 级监听、滚动监听都必须成对地在 <code>onMounted</code> / <code>onBeforeUnmount</code> 清理；<code>&lt;Transition&gt;</code> 让"DOM 节点数"不再是状态的可靠观测点，这一条已经实际造成一次误判（§5.2）。</li>
+</ol>`
                     }
                 ]
             }
