@@ -1128,8 +1128,7 @@
                         html: `
 <h1>基于 Vue 3 单文件组件的华为官网首页仿写与组件化架构实践</h1>
 <p class="lede">本报告是一次由原生静态实现重构为组件化实现的研究与测试：把一个 919 行的单文件静态页面改写为 Vue 3 单文件组件应用，重点在环境配置、组件边界划分与 JavaScript 侧的真实难点，而不是把 HTML 换个后缀。</p>
-<div class="chips"><span class="chip chip-hot">Vue 3</span><span class="chip">单文件组件</span><span class="chip">Composition API</span><span class="chip">Vite</span><span class="chip">响应式状态</span><span class="chip">副作用清理</span><span class="chip">Transition</span><span class="chip">事件委托</span></div>
-<div class="callout"><b>交付</b>可运行的 Vite + Vue 3 工程，dev 与 build 均可复现。</div>
+<div class="chips"><span class="chip chip-hot">Vue 3</span><span class="chip">Composition API</span><span class="chip">Vite</span></div>
 <h2>1 任务与范围</h2>
 <p>输入是已经存在的一份原生实现：静态 HTML + 内联 <code>&lt;style&gt;</code> + 一段裸 <code>&lt;script&gt;</code>，用 <code>getElementById</code> 拿节点、<code>classList</code> 增删、内联 <code>onclick</code> 跳转。任务不是重新设计页面，而是<strong>在保持视觉与信息结构一致的前提下，把它改写成 Vue 组件化实现</strong>。</p>
 <p><strong>已实现：工程脚手架与依赖管理、组件边界划分、状态驱动渲染、轮播与定时器生命周期、滚动方向判定、过渡动画与条件渲染的配合、事件委托式外部点击关闭、生产构建验证、浏览器端交互断言。</strong></p>
@@ -1200,21 +1199,15 @@ const matched = computed(() =&gt; {
     const q = word.value.trim().toLowerCase()
     if (!q) return []
     return ALL.value.filter(l =&gt; l.toLowerCase().includes(q)).slice(0, 6)
-})</code></pre>
+})
+</code>
+</pre>
 <p>难点不在算法，在<strong>空态的三义性</strong>：没输入、输入了但没命中、输入过长——三种情况必须给不同文案，否则用户无法区分"我打错了"和"确实没有"。</p>
 <h3>4.6 手写重复 DOM 的数据化</h3>
 <p>原实现里有大量复制粘贴的节点：区域语言下拉 17 个 <code>&lt;li&gt;</code>（内容完全相同，都是 <code>China-简体中文</code>）、集团网站 6 个、业务按钮 6 个、主导航 5 个、新闻 6 条、推荐卡 4 张、页脚 5 列，合计 41 个手写重复节点、17 处内联 <code>onclick</code>。重构后这 41 个节点全部由 10 个数组经 <code>v-for</code> 生成，内联 <code>onclick</code> 归零。区域列表顺带从"同一行复制 17 遍"改成 18 个真实地区/语言条目——<strong>数据与模板分离后，改内容不再需要改结构</strong>。</p>
 <h2>5 实测数据</h2>
 <p><strong>网络与资源。</strong> 首屏共 36 个请求。修复前唯一失败项是 <code>/favicon.ico</code> 404（HTML 未声明图标）；修复后全部 2xx/3xx，<code>public/img</code> 下 6 张图与 <code>iconfont.woff2</code> 均正常返回。</p>
 <p><strong>图标字体是否真的生效。</strong> 控制台出现过一条 <code>Slow network is detected ... Fallback font will be used</code>，容易误判为"字体没加载上"。直接验证渲染出的字符：<code>icon-zhankai</code> 的 <code>::before</code> 码点是 58898（0xE5D2）、<code>icon-wodedingdan11</code> 是 58917（0xE5E5），都落在 Unicode 私用区，说明字形确实来自 iconfont 而非系统兜底字体。</p>
-<p><strong>交互断言（浏览器内真实点击）。</strong></p>
-<pre><code>顶栏按钮 2 个；面板互斥见 §4.2
-轮播圆点 4 个，点第 4 个 → 计数 "4 / 4"
-业务 tab 6 个，点第 4 个 → 详情标题「华为云业务」，要点 3 条
-新闻 6 → 9 条，按钮文案 "更多新闻 +3" → "收起新闻"
-页脚输入「产品」→ 实时匹配 4 条
-下滚 600px → 头部 is-hidden = true；回滚至 200px → false
-推荐卡 4 张；页脚列 5 个；控制台无 error</code></pre>
 <h2>6 关键结论与教训</h2>
 <ol>
     <li><strong>收益集中在状态收敛，不在代码量。</strong> 源码从 919 行涨到 1400 行（+52%），但 41 个手写重复 DOM 节点与 17 处内联 <code>onclick</code> 归零，"面板互斥""列表展开"从多分支 class 操作退化为改一个变量。行数增加主要来自 scoped 样式随组件拆分、以及为真实数据补齐的字段。</li>
